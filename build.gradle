@@ -10,7 +10,7 @@ buildscript {
 }
 
 plugins {
-    id "com.jfrog.artifactory" version "4.6.2"
+    id "com.jfrog.bintray" version "1.7.3"
 }
 
 group 'com.cloudesire'
@@ -56,33 +56,32 @@ test {
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            groupId 'com.cloudesire'
-            artifactId 'microsoft-partner-center-api-client'
+        MyPublication(MavenPublication) {
             from components.java
+            groupId 'com.cloudesire'
+            artifactId 'partner-center-rest-api-client'
+            version '1.0'
         }
     }
 }
 
-artifactory {
-    contextUrl = 'https://artifactory.cloudesire.com/artifactory'
-    publish {
-        contextUrl = 'https://artifactory.cloudesire.com/artifactory'
-        repository {
-            repoKey = 'libs-snapshot-local'
-            username = "$System.env.ARTIFACTORY_USERNAME"
-            password = "$System.env.ARTIFACTORY_PASSWORD"
-            maven = true
-        }
-        defaults {
-            publications ('mavenJava')
-            publishBuildInfo = false
-            publishArtifacts = true
-            publishPom = true
+bintray {
+    user = "$System.env.BINTRAY_USER"
+    key = "$System.env.BINTRAY_KEY"
+    publications = ['MyPublication']
+    pkg {
+        repo = 'maven-releases'
+        name = 'partner-center-rest-api-client'
+        userOrg = 'cloudesire'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/ClouDesire/partner-center-rest-api-client.git'
+        version {
+            name = '1.0'
+            vcsTag = '1.0'
         }
     }
 }
 
-artifactoryPublish {
+bintrayUpload {
     dependsOn jar
 }
