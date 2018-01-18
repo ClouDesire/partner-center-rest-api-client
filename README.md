@@ -1,6 +1,6 @@
 # Partner Center REST API Java8/Kotlin Client
 
-[![CircleCI](https://circleci.com/gh/ClouDesire/partner-center-rest-api-client.svg?style=svg)](https://circleci.com/gh/ClouDesire/partner-center-rest-api-client)
+[![CircleCI](https://circleci.com/gh/ClouDesire/partner-center-rest-api-client.svg?style=svg&circle-token=a5c07114285cefe886525a9194b8e20be32d28d5)](https://circleci.com/gh/ClouDesire/partner-center-rest-api-client)
 
 This is a Kotlin (partial) implementation (usable also on Java 8 projects) of this [API](https://docs.microsoft.com/en-us/partner-center/develop/partner-center-rest-api-reference), based on the great [retrofit](https://github.com/square/retrofit) HTTP library.
 
