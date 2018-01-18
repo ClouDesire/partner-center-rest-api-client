@@ -16,7 +16,6 @@ plugins {
 }
 
 group 'com.cloudesire'
-version version
 
 apply plugin: 'kotlin'
 apply plugin: 'maven-publish'
@@ -101,8 +100,9 @@ bintray {
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/ClouDesire/partner-center-rest-api-client.git'
         version {
-            name = version
-            vcsTag = version
+            gpg {
+                sign = false
+            }
         }
     }
 }
