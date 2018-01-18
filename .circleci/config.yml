@@ -32,5 +32,5 @@ jobs:
           name: to the MOON
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ] && [ -z "${SKIP_DOCKER_BUILD}" ]; then
-              ./gradlew artifactoryPublish
+              ./gradlew bintrayUpload
             fi
