@@ -2,13 +2,13 @@ package com.cloudesire.partnercenter.entities
 
 data class BillingProfile
 (
-        val email: String = "",
+        var email: String = "",
 
-        val culture: String = "en-US",
+        var culture: String = "en-US",
 
-        val language: String = "en",
+        var language: String = "en",
 
-        val companyName: String = "",
+        var companyName: String = "",
 
-        val defaultAddress: Address = Address()
+        var defaultAddress: Address = Address()
 )

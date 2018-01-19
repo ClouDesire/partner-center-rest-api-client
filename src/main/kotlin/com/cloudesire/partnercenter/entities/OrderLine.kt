@@ -2,13 +2,13 @@ package com.cloudesire.partnercenter.entities
 
 data class OrderLine
 (
-        val lineItemNumber: Int = 0,
+        var lineItemNumber: Int = 0,
 
-        val offerId: String = "",
+        var offerId: String = "",
 
-        val subscriptionId: String? = null,
+        var subscriptionId: String? = null,
 
-        val parentSubscriptionId: String? = null,
+        var parentSubscriptionId: String? = null,
 
-        val quantity: Int = 1
+        var quantity: Int = 1
 )
