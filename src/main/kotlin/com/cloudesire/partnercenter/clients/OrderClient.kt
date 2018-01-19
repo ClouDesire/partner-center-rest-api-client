@@ -11,6 +11,7 @@ class OrderClient
         private val orderService: OrderService
 )
 {
+    @Throws(InvalidActionException::class)
     fun createOrder(customerId: String, order: Order): Order
     {
         val createOrderCall = orderService
@@ -21,6 +22,7 @@ class OrderClient
                ?: throw InvalidActionException(RetrofitErrorConverter.toString(createOrderCall.errorBody()))
     }
 
+    @Throws(EntityNotFoundException::class)
     fun retrieveOrder(customerId: String, orderId: String): Order
     {
         val retrieveOrderCall = orderService

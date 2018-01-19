@@ -11,6 +11,7 @@ class SubscriptionClient
         private val subscriptionService: SubscriptionService
 )
 {
+    @Throws(EntityNotFoundException::class)
     fun retrieveSubscription(customerId: String, subscriptionId: String): Subscription
     {
         val retrieveSubscriptionCall = subscriptionService
@@ -31,6 +32,7 @@ class SubscriptionClient
                ?: throw InvalidActionException(RetrofitErrorConverter.toString(patchSubscriptionCall.errorBody()))
     }
 
+    @Throws(InvalidActionException::class)
     fun suspendSubscription(customerId: String, subscriptionId: String): Subscription
     {
         val subscription = retrieveSubscription(customerId, subscriptionId)
@@ -38,6 +40,7 @@ class SubscriptionClient
         return patchSubscription(customerId, subscription)
     }
 
+    @Throws(InvalidActionException::class)
     fun activateSubscription(customerId: String, subscriptionId: String): Subscription
     {
         val subscription = retrieveSubscription(customerId, subscriptionId)
@@ -45,6 +48,7 @@ class SubscriptionClient
         return patchSubscription(customerId, subscription)
     }
 
+    @Throws(InvalidActionException::class)
     fun updateSubscriptionQuantity(customerId: String, subscriptionId: String, quantity: Int): Subscription
     {
         val subscription = retrieveSubscription(customerId, subscriptionId)

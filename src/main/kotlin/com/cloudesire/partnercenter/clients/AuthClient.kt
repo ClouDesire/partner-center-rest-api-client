@@ -15,6 +15,7 @@ class AuthClient
     private val authorityUrl: String = "https://login.windows.net"
     private val partnerCenterRootUrl: String = "https://api.partnercenter.microsoft.com"
 
+    @Throws(UnauthorizedException::class)
     fun getAccessToken(): String?
     {
         return getPartnerCenterToken(getADToken())
