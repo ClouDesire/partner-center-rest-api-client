@@ -11,6 +11,7 @@ class CustomerClient
         private val customerService: CustomerService
 )
 {
+    @Throws(InvalidActionException::class)
     fun createCustomer(customer: Customer): Customer
     {
         val createCustomerCall = customerService
@@ -21,6 +22,7 @@ class CustomerClient
                ?: throw InvalidActionException(RetrofitErrorConverter.toString(createCustomerCall.errorBody()))
     }
 
+    @Throws(EntityNotFoundException::class)
     fun retrieveCustomer(customerid: String): Customer
     {
         val retrieveCustomerCall = customerService
@@ -31,6 +33,7 @@ class CustomerClient
                ?: throw EntityNotFoundException(RetrofitErrorConverter.toString(retrieveCustomerCall.errorBody()))
     }
 
+    @Throws(InvalidActionException::class)
     fun deleteCustomer(customerId: String)
     {
         val deleteCustomerCall = customerService
