@@ -4,9 +4,9 @@ data class Customer
 (
         val id: String? = null,
 
-        val companyProfile: CompanyProfile = CompanyProfile(),
+        var companyProfile: CompanyProfile = CompanyProfile(),
 
-        val billingProfile: BillingProfile = BillingProfile(),
+        var billingProfile: BillingProfile = BillingProfile(),
 
-        val userCredentials: UserCredentials? = null
+        var userCredentials: UserCredentials? = null
 )

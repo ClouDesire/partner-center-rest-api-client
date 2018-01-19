@@ -4,9 +4,9 @@ data class Order
 (
         val id: String? = null,
 
-        val referenceCustomerId: String = "",
+        var referenceCustomerId: String = "",
 
-        val lineItems: List<OrderLine> = arrayListOf(),
+        var lineItems: List<OrderLine> = arrayListOf(),
 
         val creationDate: String? = null
 )

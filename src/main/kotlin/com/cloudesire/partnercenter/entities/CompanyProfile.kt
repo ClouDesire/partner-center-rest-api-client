@@ -2,7 +2,7 @@ package com.cloudesire.partnercenter.entities
 
 data class CompanyProfile
 (
-        val domain: String = "",
+        var domain: String = "",
 
-        val companyName: String? = null
+        var companyName: String? = null
 )
