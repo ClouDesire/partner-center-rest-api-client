@@ -39,6 +39,9 @@ class WorkflowTest
         order.lineItems[0].offerId.should.be.equal(office365OfferId)
         order.lineItems[0].quantity.should.be.equal(1)
 
+        val allSubscriptions = client.getSubscriptionClient().retrieveSubscriptions(customer.id!!)
+        allSubscriptions.totalCount.should.be.equal(1)
+
         // retrieve order
         order = client.getOrderClient().retrieveOrder(customerId = customer.id!!, orderId = order.id!!)
         order.id.should.not.be.empty
