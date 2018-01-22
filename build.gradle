@@ -113,3 +113,6 @@ bintrayUpload {
 
 afterReleaseBuild.dependsOn bintrayUpload
 
+release {
+    preTagCommitMessage = '[Gradle Release Plugin][skip-ci] - pre tag commit: '
+}
