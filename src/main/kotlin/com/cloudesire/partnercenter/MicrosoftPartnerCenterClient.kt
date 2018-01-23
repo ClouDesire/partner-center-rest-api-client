@@ -26,8 +26,7 @@ class MicrosoftPartnerCenterClient
             builder.resellerDomain
     )
     {
-        val authToken = AuthClient(username, password, clientId, resellerDomain).getAccessToken()
-        serviceGenerator = ServiceGenerator(authToken)
+        refreshToken()
     }
 
     class Builder
@@ -43,6 +42,12 @@ class MicrosoftPartnerCenterClient
         fun resellerDomain(resellerDomain: String) = apply { this.resellerDomain = resellerDomain }
 
         fun build() = MicrosoftPartnerCenterClient(this)
+    }
+
+    fun refreshToken()
+    {
+        val authToken = AuthClient(username, password, clientId, resellerDomain).getAccessToken()
+        serviceGenerator = ServiceGenerator(authToken)
     }
 
     fun getCustomerClient(): CustomerClient = CustomerClient(serviceGenerator.createService(CustomerService::class.java))

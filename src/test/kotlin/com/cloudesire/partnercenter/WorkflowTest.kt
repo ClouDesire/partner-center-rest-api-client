@@ -55,6 +55,8 @@ class WorkflowTest
         subscription = client.getSubscriptionClient().updateSubscriptionQuantity(customerId = customer.id!!, subscriptionId = order.lineItems[0].subscriptionId!!, quantity = 2)
         subscription.quantity.should.be.equal(2)
 
+        client.refreshToken()
+
         // clean up
         client.getSubscriptionClient().suspendSubscription(customerId = customer.id!!, subscriptionId = order.lineItems[0].subscriptionId!!)
         client.getCustomerClient().deleteCustomer(customer.id!!)
