@@ -5,7 +5,7 @@ import com.cloudesire.partnercenter.entities.Subscription
 import com.cloudesire.partnercenter.exceptions.EntityNotFoundException
 import com.cloudesire.partnercenter.exceptions.InvalidActionException
 import com.cloudesire.partnercenter.services.SubscriptionService
-import com.cloudesire.partnercenter.utils.RetrofitErrorConverter
+import com.cloudesire.partnercenter.utils.RetrofitUtils
 
 class SubscriptionClient
 (
@@ -20,7 +20,7 @@ class SubscriptionClient
                 .execute()
 
         return retrieveSubscriptionCall?.body()
-               ?: throw EntityNotFoundException(RetrofitErrorConverter.toString(retrieveSubscriptionCall.errorBody()))
+               ?: throw EntityNotFoundException(RetrofitUtils.extractError(retrieveSubscriptionCall))
     }
 
     @Throws(EntityNotFoundException::class)
@@ -31,7 +31,7 @@ class SubscriptionClient
                 .execute()
 
         return retrieveSubscriptionsCall?.body()
-               ?: throw EntityNotFoundException(RetrofitErrorConverter.toString(retrieveSubscriptionsCall.errorBody()))
+               ?: throw EntityNotFoundException(RetrofitUtils.extractError(retrieveSubscriptionsCall))
     }
 
     private fun patchSubscription(customerId: String, subscription: Subscription): Subscription
@@ -41,7 +41,7 @@ class SubscriptionClient
                 .execute()
 
         return patchSubscriptionCall?.body()
-               ?: throw InvalidActionException(RetrofitErrorConverter.toString(patchSubscriptionCall.errorBody()))
+               ?: throw InvalidActionException(RetrofitUtils.extractError(patchSubscriptionCall))
     }
 
     @Throws(InvalidActionException::class)

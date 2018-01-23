@@ -4,7 +4,7 @@ import com.cloudesire.partnercenter.entities.Order
 import com.cloudesire.partnercenter.exceptions.EntityNotFoundException
 import com.cloudesire.partnercenter.exceptions.InvalidActionException
 import com.cloudesire.partnercenter.services.OrderService
-import com.cloudesire.partnercenter.utils.RetrofitErrorConverter
+import com.cloudesire.partnercenter.utils.RetrofitUtils
 
 class OrderClient
 (
@@ -19,7 +19,7 @@ class OrderClient
                 .execute()
 
         return createOrderCall?.body()
-               ?: throw InvalidActionException(RetrofitErrorConverter.toString(createOrderCall.errorBody()))
+               ?: throw InvalidActionException(RetrofitUtils.extractError(createOrderCall))
     }
 
     @Throws(EntityNotFoundException::class)
@@ -30,6 +30,6 @@ class OrderClient
                 .execute()
 
         return retrieveOrderCall?.body()
-               ?: throw EntityNotFoundException(RetrofitErrorConverter.toString(retrieveOrderCall.errorBody()))
+               ?: throw EntityNotFoundException(RetrofitUtils.extractError(retrieveOrderCall))
     }
 }
