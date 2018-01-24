@@ -1,5 +1,6 @@
 package com.cloudesire.partnercenter.clients
 
+import com.cloudesire.partnercenter.entities.Conversion
 import com.cloudesire.partnercenter.entities.Pagination
 import com.cloudesire.partnercenter.entities.Subscription
 import com.cloudesire.partnercenter.exceptions.EntityNotFoundException
@@ -66,5 +67,29 @@ class SubscriptionClient
         val subscription = retrieveSubscription(customerId, subscriptionId)
         subscription.quantity = quantity
         return patchSubscription(customerId, subscription)
+    }
+
+    @Throws(InvalidActionException::class)
+    fun upgradeTrialToNormal(customerId: String, subscriptionId: String, targetOfferId: String)
+    {
+        val subscription = retrieveSubscription(customerId, subscriptionId)
+
+        val conversion = Conversion()
+        conversion.subscriptionId = subscriptionId
+        conversion.orderId = subscription.orderId!!
+        conversion.offerId = subscription.offerId!!
+        conversion.targetOfferId = targetOfferId
+
+        val upgradeTrialToNormalCall = subscriptionService
+                .upgradeTrialToNormal(customerId, subscriptionId, conversion)
+                .execute()
+
+        if(upgradeTrialToNormalCall.isSuccessful)
+        {
+            val conversionResult = upgradeTrialToNormalCall?.body()
+                ?: throw EntityNotFoundException(RetrofitUtils.extractError(upgradeTrialToNormalCall))
+
+            if(conversionResult.error != null) throw InvalidActionException(conversionResult.error.description)
+        }
     }
 }

@@ -32,7 +32,7 @@ class WorkflowTest
 
         // create order
         val orderLine = OrderLine(offerId = office365OfferId)
-        var order = Order(referenceCustomerId = customer.id!!, lineItems = arrayListOf(orderLine))
+        var order = Order(referenceCustomerId = customer.id!!, lineItems = arrayListOf(orderLine), billingCycle = "None")
         order = client.getOrderClient().createOrder(customerId = customer.id!!, order = order)
         order.id.should.not.be.empty
         order.referenceCustomerId.should.be.equal(customer.id)
@@ -45,6 +45,9 @@ class WorkflowTest
         // retrieve order
         order = client.getOrderClient().retrieveOrder(customerId = customer.id!!, orderId = order.id!!)
         order.id.should.not.be.empty
+
+        // upgrade to normal order
+        client.getSubscriptionClient().upgradeTrialToNormal(customerId = customer.id!!, subscriptionId = allSubscriptions.items[0].id)
 
         // suspend, reactivate and update subscription quantity
         var subscription: Subscription

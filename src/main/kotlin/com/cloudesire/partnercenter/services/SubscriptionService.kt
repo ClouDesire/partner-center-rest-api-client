@@ -1,12 +1,11 @@
 package com.cloudesire.partnercenter.services
 
+import com.cloudesire.partnercenter.entities.Conversion
+import com.cloudesire.partnercenter.entities.ConversionResult
 import com.cloudesire.partnercenter.entities.Pagination
 import com.cloudesire.partnercenter.entities.Subscription
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.PATCH
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface SubscriptionService
 {
@@ -21,4 +20,8 @@ interface SubscriptionService
     @PATCH("v1/customers/{customerId}/subscriptions/{subscriptionId}")
     fun patchSubscription(@Path("customerId") customerId: String, @Path("subscriptionId") subscriptionId: String, @Body subscription: Subscription)
             : Call<Subscription>
+
+    @POST("v1/customers/{customerId}/subscriptions/{subscriptionId}/conversions")
+    fun upgradeTrialToNormal(@Path("customerId") customerId: String, @Path("subscriptionId") subscriptionId: String, @Body conversion: Conversion)
+            : Call<ConversionResult>
 }
