@@ -74,22 +74,15 @@ class SubscriptionClient
     {
         val subscription = retrieveSubscription(customerId, subscriptionId)
 
-        val conversion = Conversion()
-        conversion.subscriptionId = subscriptionId
-        conversion.orderId = subscription.orderId!!
-        conversion.offerId = subscription.offerId!!
-        conversion.targetOfferId = targetOfferId
+        val conversion = Conversion(subscriptionId, subscription.offerId!!, targetOfferId, subscription.orderId!!, 1, "Monthly")
 
         val upgradeTrialToNormalCall = subscriptionService
                 .upgradeTrialToNormal(customerId, subscriptionId, conversion)
                 .execute()
 
-        if(upgradeTrialToNormalCall.isSuccessful)
-        {
-            val conversionResult = upgradeTrialToNormalCall?.body()
+        val conversionResult = upgradeTrialToNormalCall?.body()
                 ?: throw EntityNotFoundException(RetrofitUtils.extractError(upgradeTrialToNormalCall))
 
-            if(conversionResult.error != null) throw InvalidActionException(conversionResult.error.description)
-        }
+        if(conversionResult.error != null) throw InvalidActionException(conversionResult.error.description)
     }
 }

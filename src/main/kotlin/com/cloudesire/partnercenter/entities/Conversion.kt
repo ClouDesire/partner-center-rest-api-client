@@ -10,5 +10,7 @@ data class Conversion
 
         var orderId: String = "",
 
+        var quantity: Int = 1,
+
         var billingCycle: String = "Monthly"
 )

@@ -8,7 +8,8 @@ import java.util.*
 
 class WorkflowTest
 {
-    private val office365OfferId: String = "5C9FD4CC-EDCE-44A8-8E91-07DF09744609"
+    private val office365OfferId: String = "031C9E47-4802-4248-838E-778FB1D2CC05"
+    private val office365TrialOfferId: String = "C0BD2E08-11AC-4836-BDC7-3712E744922F"
 
     @Test
     @Ignore
@@ -31,15 +32,15 @@ class WorkflowTest
         customer.id.should.not.be.empty
 
         // create order
-        val orderLine = OrderLine(offerId = office365OfferId)
+        val orderLine = OrderLine(offerId = office365TrialOfferId, quantity = 25)
         var order = Order(referenceCustomerId = customer.id!!, lineItems = arrayListOf(orderLine), billingCycle = "None")
         order = client.getOrderClient().createOrder(customerId = customer.id!!, order = order)
         order.id.should.not.be.empty
         order.referenceCustomerId.should.be.equal(customer.id)
-        order.lineItems[0].offerId.should.be.equal(office365OfferId)
-        order.lineItems[0].quantity.should.be.equal(1)
+        order.lineItems[0].offerId.should.be.equal(office365TrialOfferId)
+        order.lineItems[0].quantity.should.be.equal(25)
 
-        val allSubscriptions = client.getSubscriptionClient().retrieveSubscriptions(customer.id!!)
+        var allSubscriptions = client.getSubscriptionClient().retrieveSubscriptions(customer.id!!)
         allSubscriptions.totalCount.should.be.equal(1)
 
         // retrieve order
@@ -47,7 +48,11 @@ class WorkflowTest
         order.id.should.not.be.empty
 
         // upgrade to normal order
-        client.getSubscriptionClient().upgradeTrialToNormal(customerId = customer.id!!, subscriptionId = allSubscriptions.items[0].id)
+        client.getSubscriptionClient().upgradeTrialToNormal(customerId = customer.id!!, subscriptionId = allSubscriptions.items[0].id, targetOfferId = office365OfferId)
+        allSubscriptions = client.getSubscriptionClient().retrieveSubscriptions(customer.id!!)
+        order = client.getOrderClient().retrieveOrder(customerId = customer.id!!, orderId = allSubscriptions.items[0].orderId!!)
+        order.lineItems[0].offerId.should.be.equal(office365OfferId)
+        order.lineItems[0].quantity.should.be.equal(1)
 
         // suspend, reactivate and update subscription quantity
         var subscription: Subscription
