@@ -2,63 +2,126 @@ package com.cloudesire.partnercenter
 
 import com.cloudesire.partnercenter.entities.*
 import com.winterbe.expekt.should
+import mu.KLogging
+import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import java.util.*
 
 class WorkflowTest
 {
-    private val office365OfferId: String = "5C9FD4CC-EDCE-44A8-8E91-07DF09744609"
+    private val office365OfferId: String = "031C9E47-4802-4248-838E-778FB1D2CC05"
+    private val office365TrialOfferId: String = "C0BD2E08-11AC-4836-BDC7-3712E744922F"
+
+    private var client: MicrosoftPartnerCenterClient? = null
+
+    companion object: KLogging()
+
+    @Before
+    fun refreshToken()
+    {
+        client?.let { client!!.refreshToken() }
+    }
 
     @Test
     @Ignore
-    fun completeWorkflowTest()
+    fun workflowTest()
     {
-        val client = MicrosoftPartnerCenterClient.Builder()
+        var customer: Customer? = null
+        var order: Order? = null
+
+        client = MicrosoftPartnerCenterClient.Builder()
                 .clientId("")
                 .username("")
                 .password("")
                 .resellerDomain("")
                 .build()
 
-        // create customer
+        client.should.be.not.`null`
+
+        try
+        {
+            customer = createCustomer()
+            customer.should.not.be.`null`
+            customer!!.id.should.not.be.empty
+
+            order = createTrialOrder(customer.id!!)
+            order.should.not.be.`null`
+            order.id.should.not.be.empty
+            order.referenceCustomerId.should.be.equal(customer.id)
+            order.lineItems[0].offerId.should.be.equal(office365TrialOfferId)
+            order.lineItems[0].quantity.should.be.equal(25)
+
+            val subscriptions = client
+                    ?.getSubscriptionClient()
+                    ?.retrieveSubscriptionsByOrderId(customer.id!!, order.id!!)
+            subscriptions!!.totalCount.should.be.equal(1)
+
+            order = upgradeTrialToPaid(customer.id!!, subscriptions.items[0].id, order.id!!)
+            order.lineItems[0].offerId.should.be.equal(office365OfferId)
+            order.lineItems[0].quantity.should.be.equal(1)
+
+
+            suspendActivateAndUpdateSubscription(customer.id!!, subscriptions.items[0].id)
+        }
+        finally
+        {
+            cleanUp(customer, order)
+        }
+    }
+
+    private fun cleanUp(customer: Customer?, order: Order?)
+    {
+        try
+        {
+            if (customer?.id != null)
+            {
+                if (order?.id != null)
+                {
+                    client!!
+                            .getSubscriptionClient()
+                            .suspendSubscription(customerId = customer.id!!, subscriptionId = order.lineItems[0].subscriptionId!!)
+                }
+
+                client!!.getCustomerClient().deleteCustomer(customer.id!!)
+            }
+        }
+        catch (e: Exception)
+        {
+            KLogging().logger.error { "Cannot clean up the resources: ${e.message}" }
+        }
+    }
+
+    private fun createCustomer(): Customer?
+    {
         val randomString = UUID.randomUUID().toString().replace("-", "").substring(0, 6)
         val companyProfile = CompanyProfile("cloudesire$randomString.onmicrosoft.com", "cloudesire")
         val address = Address("Via Umberto Forti, 6", null, "Pisa", "PI", "56121", "IT", null, "Beppe", "Rossi", "123")
         val billingProfile = BillingProfile(email = "dev@cloudesire.com", companyName = "cloudesire", defaultAddress = address)
-        var customer = Customer(null, companyProfile, billingProfile)
-        customer = client.getCustomerClient().createCustomer(customer)
-        customer.id.should.not.be.empty
+        val customer = Customer(null, companyProfile, billingProfile)
+        return client!!.getCustomerClient().createCustomer(customer)
+    }
 
-        // create order
-        val orderLine = OrderLine(offerId = office365OfferId)
-        var order = Order(referenceCustomerId = customer.id!!, lineItems = arrayListOf(orderLine))
-        order = client.getOrderClient().createOrder(customerId = customer.id!!, order = order)
-        order.id.should.not.be.empty
-        order.referenceCustomerId.should.be.equal(customer.id)
-        order.lineItems[0].offerId.should.be.equal(office365OfferId)
-        order.lineItems[0].quantity.should.be.equal(1)
+    private fun createTrialOrder(customerId: String): Order
+    {
+        val orderLine = OrderLine(offerId = office365TrialOfferId, quantity = 25)
+        val order = Order(referenceCustomerId = customerId, lineItems = arrayListOf(orderLine), billingCycle = "None")
+        return client!!.getOrderClient().createOrder(customerId = customerId, order = order)
+    }
 
-        val allSubscriptions = client.getSubscriptionClient().retrieveSubscriptions(customer.id!!)
-        allSubscriptions.totalCount.should.be.equal(1)
+    private fun upgradeTrialToPaid(customerId: String, subscriptionId: String, orderId: String): Order
+    {
+        client!!.getSubscriptionClient().upgradeTrialToPaid(customerId, subscriptionId, office365OfferId)
+        return client!!.getOrderClient().retrieveOrder(customerId = customerId, orderId = orderId)
+    }
 
-        // retrieve order
-        order = client.getOrderClient().retrieveOrder(customerId = customer.id!!, orderId = order.id!!)
-        order.id.should.not.be.empty
-
-        // suspend, reactivate and update subscription quantity
-        var subscription: Subscription
-        subscription = client.getSubscriptionClient().suspendSubscription(customerId = customer.id!!, subscriptionId = order.lineItems[0].subscriptionId!!)
+    private fun suspendActivateAndUpdateSubscription(customerId: String, subscriptionId: String)
+    {
+        var subscription: Subscription = client!!.getSubscriptionClient().suspendSubscription(customerId = customerId, subscriptionId = subscriptionId)
         subscription.status.should.be.equal(Subscription.SubscriptionStatus.suspended)
-        subscription = client.getSubscriptionClient().activateSubscription(customerId = customer.id!!, subscriptionId = order.lineItems[0].subscriptionId!!)
+        subscription = client!!.getSubscriptionClient().activateSubscription(customerId = customerId, subscriptionId = subscriptionId)
         subscription.status.should.be.equal(Subscription.SubscriptionStatus.active)
-        subscription = client.getSubscriptionClient().updateSubscriptionQuantity(customerId = customer.id!!, subscriptionId = order.lineItems[0].subscriptionId!!, quantity = 2)
+        subscription = client!!.getSubscriptionClient().updateSubscriptionQuantity(customerId = customerId, subscriptionId = subscriptionId, quantity = 2)
         subscription.quantity.should.be.equal(2)
-
-        client.refreshToken()
-
-        // clean up
-        client.getSubscriptionClient().suspendSubscription(customerId = customer.id!!, subscriptionId = order.lineItems[0].subscriptionId!!)
-        client.getCustomerClient().deleteCustomer(customer.id!!)
     }
 }

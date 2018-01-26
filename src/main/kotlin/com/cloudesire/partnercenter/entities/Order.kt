@@ -8,5 +8,7 @@ data class Order
 
         var lineItems: List<OrderLine> = arrayListOf(),
 
-        val creationDate: String? = null
+        val creationDate: String? = null,
+
+        var billingCycle: String? = "Monthly"
 )

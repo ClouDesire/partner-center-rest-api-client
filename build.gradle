@@ -47,6 +47,8 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     testCompile 'com.winterbe:expekt:0.5.0'
+    testCompile 'org.slf4j:slf4j-simple:1.7.25'
+    testCompile 'io.github.microutils:kotlin-logging:1.4.9'
 }
 
 test {

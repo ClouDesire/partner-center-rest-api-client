@@ -1,5 +1,6 @@
 package com.cloudesire.partnercenter.clients
 
+import com.cloudesire.partnercenter.entities.Conversion
 import com.cloudesire.partnercenter.entities.Pagination
 import com.cloudesire.partnercenter.entities.Subscription
 import com.cloudesire.partnercenter.exceptions.EntityNotFoundException
@@ -21,6 +22,17 @@ class SubscriptionClient
 
         return retrieveSubscriptionCall?.body()
                ?: throw EntityNotFoundException(RetrofitUtils.extractError(retrieveSubscriptionCall))
+    }
+
+    @Throws(EntityNotFoundException::class)
+    fun retrieveSubscriptionsByOrderId(customerId: String, orderId: String): Pagination<Subscription>
+    {
+        val retrieveSubscriptionsByOrderIdCall = subscriptionService
+                .retrieveSubscriptionsByOrderId(customerId, orderId)
+                .execute()
+
+        return retrieveSubscriptionsByOrderIdCall?.body()
+               ?: throw EntityNotFoundException(RetrofitUtils.extractError(retrieveSubscriptionsByOrderIdCall))
     }
 
     @Throws(EntityNotFoundException::class)
@@ -66,5 +78,22 @@ class SubscriptionClient
         val subscription = retrieveSubscription(customerId, subscriptionId)
         subscription.quantity = quantity
         return patchSubscription(customerId, subscription)
+    }
+
+    @Throws(InvalidActionException::class)
+    fun upgradeTrialToPaid(customerId: String, subscriptionId: String, targetOfferId: String)
+    {
+        val subscription = retrieveSubscription(customerId, subscriptionId)
+
+        val conversion = Conversion(subscriptionId, subscription.offerId!!, targetOfferId, subscription.orderId!!, 1, "Monthly")
+
+        val upgradeTrialToPaidCall = subscriptionService
+                .upgradeTrialToPaid(customerId, subscriptionId, conversion)
+                .execute()
+
+        val conversionResult = upgradeTrialToPaidCall?.body()
+                ?: throw EntityNotFoundException(RetrofitUtils.extractError(upgradeTrialToPaidCall))
+
+        if(conversionResult.error != null) throw InvalidActionException(conversionResult.error.description)
     }
 }
