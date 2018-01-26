@@ -6,5 +6,9 @@ data class Offer
 
         val name: String,
 
+        val minimumQuantity: Int,
+
+        val maximumQuantity: Int,
+
         val isAvailableForPurchase: Boolean
 )

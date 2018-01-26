@@ -104,7 +104,8 @@ class WorkflowTest
 
     private fun createTrialOrder(customerId: String): Order
     {
-        val orderLine = OrderLine(offerId = office365TrialOfferId, quantity = 25)
+        val offer = client!!.getOfferClient().retrieveOffer(office365TrialOfferId, "it")
+        val orderLine = OrderLine(offerId = office365TrialOfferId, quantity = offer.minimumQuantity)
         val order = Order(referenceCustomerId = customerId, lineItems = arrayListOf(orderLine), billingCycle = "None")
         return client!!.getOrderClient().createOrder(customerId = customerId, order = order)
     }
