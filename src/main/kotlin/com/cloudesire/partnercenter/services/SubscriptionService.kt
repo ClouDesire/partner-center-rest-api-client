@@ -14,6 +14,10 @@ interface SubscriptionService
             : Call<Subscription>
 
     @GET("v1/customers/{customerId}/subscriptions")
+    fun retrieveSubscriptionsByOrderId(@Path("customerId") customerId: String, @Query("order_id") orderId: String)
+            : Call<Pagination<Subscription>>
+
+    @GET("v1/customers/{customerId}/subscriptions")
     fun retrieveSubscriptions(@Path("customerId") customerId: String)
             : Call<Pagination<Subscription>>
 
@@ -22,6 +26,6 @@ interface SubscriptionService
             : Call<Subscription>
 
     @POST("v1/customers/{customerId}/subscriptions/{subscriptionId}/conversions")
-    fun upgradeTrialToNormal(@Path("customerId") customerId: String, @Path("subscriptionId") subscriptionId: String, @Body conversion: Conversion)
+    fun upgradeTrialToPaid(@Path("customerId") customerId: String, @Path("subscriptionId") subscriptionId: String, @Body conversion: Conversion)
             : Call<ConversionResult>
 }

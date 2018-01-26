@@ -25,6 +25,17 @@ class SubscriptionClient
     }
 
     @Throws(EntityNotFoundException::class)
+    fun retrieveSubscriptionsByOrderId(customerId: String, orderId: String): Pagination<Subscription>
+    {
+        val retrieveSubscriptionsByOrderIdCall = subscriptionService
+                .retrieveSubscriptionsByOrderId(customerId, orderId)
+                .execute()
+
+        return retrieveSubscriptionsByOrderIdCall?.body()
+               ?: throw EntityNotFoundException(RetrofitUtils.extractError(retrieveSubscriptionsByOrderIdCall))
+    }
+
+    @Throws(EntityNotFoundException::class)
     fun retrieveSubscriptions(customerId: String): Pagination<Subscription>
     {
         val retrieveSubscriptionsCall = subscriptionService
@@ -70,18 +81,18 @@ class SubscriptionClient
     }
 
     @Throws(InvalidActionException::class)
-    fun upgradeTrialToNormal(customerId: String, subscriptionId: String, targetOfferId: String)
+    fun upgradeTrialToPaid(customerId: String, subscriptionId: String, targetOfferId: String)
     {
         val subscription = retrieveSubscription(customerId, subscriptionId)
 
         val conversion = Conversion(subscriptionId, subscription.offerId!!, targetOfferId, subscription.orderId!!, 1, "Monthly")
 
-        val upgradeTrialToNormalCall = subscriptionService
-                .upgradeTrialToNormal(customerId, subscriptionId, conversion)
+        val upgradeTrialToPaidCall = subscriptionService
+                .upgradeTrialToPaid(customerId, subscriptionId, conversion)
                 .execute()
 
-        val conversionResult = upgradeTrialToNormalCall?.body()
-                ?: throw EntityNotFoundException(RetrofitUtils.extractError(upgradeTrialToNormalCall))
+        val conversionResult = upgradeTrialToPaidCall?.body()
+                ?: throw EntityNotFoundException(RetrofitUtils.extractError(upgradeTrialToPaidCall))
 
         if(conversionResult.error != null) throw InvalidActionException(conversionResult.error.description)
     }
