@@ -45,7 +45,7 @@ class WorkflowTest
             customer.should.not.be.`null`
             customer!!.id.should.not.be.empty
 
-            order = createTrialOrder(customer.id!!)
+            order = createTrialOrder(customer.id!!, customer.billingProfile.defaultAddress.country!!)
             order.should.not.be.`null`
             order.id.should.not.be.empty
             order.referenceCustomerId.should.be.equal(customer.id)
@@ -102,9 +102,9 @@ class WorkflowTest
         return client!!.getCustomerClient().createCustomer(customer)
     }
 
-    private fun createTrialOrder(customerId: String): Order
+    private fun createTrialOrder(customerId: String, customerCountryCode: String): Order
     {
-        val offer = client!!.getOfferClient().retrieveOffer(office365TrialOfferId, "it")
+        val offer = client!!.getOfferClient().retrieveOffer(office365TrialOfferId, customerCountryCode)
         val orderLine = OrderLine(offerId = office365TrialOfferId, quantity = offer.minimumQuantity)
         val order = Order(referenceCustomerId = customerId, lineItems = arrayListOf(orderLine), billingCycle = "None")
         return client!!.getOrderClient().createOrder(customerId = customerId, order = order)
