@@ -1,13 +1,7 @@
 package com.cloudesire.partnercenter
 
-import com.cloudesire.partnercenter.clients.AuthClient
-import com.cloudesire.partnercenter.clients.CustomerClient
-import com.cloudesire.partnercenter.clients.OrderClient
-import com.cloudesire.partnercenter.clients.SubscriptionClient
-import com.cloudesire.partnercenter.services.CustomerService
-import com.cloudesire.partnercenter.services.OrderService
-import com.cloudesire.partnercenter.services.ServiceGenerator
-import com.cloudesire.partnercenter.services.SubscriptionService
+import com.cloudesire.partnercenter.clients.*
+import com.cloudesire.partnercenter.services.*
 
 class MicrosoftPartnerCenterClient
 (
@@ -55,4 +49,6 @@ class MicrosoftPartnerCenterClient
     fun getOrderClient(): OrderClient = OrderClient(serviceGenerator.createService(OrderService::class.java))
 
     fun getSubscriptionClient(): SubscriptionClient = SubscriptionClient(serviceGenerator.createService(SubscriptionService::class.java))
+
+    fun getOfferClient(): OfferClient = OfferClient(serviceGenerator.createService(OfferService::class.java))
 }
