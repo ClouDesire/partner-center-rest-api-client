@@ -56,7 +56,7 @@ class SubscriptionClient
                ?: throw InvalidActionException(RetrofitUtils.extractError(patchSubscriptionCall))
     }
 
-    @Throws(InvalidActionException::class)
+    @Throws(InvalidActionException::class, EntityNotFoundException::class)
     fun suspendSubscription(customerId: String, subscriptionId: String): Subscription
     {
         val subscription = retrieveSubscription(customerId, subscriptionId)
