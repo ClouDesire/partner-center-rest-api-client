@@ -69,11 +69,11 @@ publishing {
 }
 
 artifactory {
-    contextUrl = 'https://artifactory.cloudesire.com/artifactory'
+    contextUrl = 'https://archiva.cloudesire.com/repository'
     publish {
-        contextUrl = 'https://artifactory.cloudesire.com/artifactory'
+        contextUrl = 'https://archiva.cloudesire.com/repository'
         repository {
-            repoKey = 'libs-snapshot-local'
+            repoKey = 'snapshots'
             username = "$System.env.ARTIFACTORY_USER"
             password = "$System.env.ARTIFACTORY_PASS"
         }
