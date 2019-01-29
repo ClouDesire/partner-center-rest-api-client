@@ -41,6 +41,29 @@ Make sure that jcenter is enabled
       jcenter()
     }
     
-## Examples
+## Usage
+
+### Authentication
+
+openssl genrsa -out rsa_private.pem 2048
+openssl rsa -in rsa_private.pem -pubout -out rsa_public.pem
+
+```kotlin
+MicrosoftPartnerCenterClient.Builder()
+    .clientId("")
+    .clientSecret("")
+    .resellerDomain("")
+    .build()
+```
+
+The `clientId` is the Azure AD client id of the calling web service. To find the calling application's client ID, in the Azure portal, click Azure Active Directory, click App registrations, click the application. The `clientId` is the Application ID.
+  
+The `clientSecret` is key registered for the calling web service or daemon application in Azure AD. To create a key, in the Azure portal, click Azure Active Directory, click App registrations, click the application, click Settings, click Keys, and add a Key.
+  
+The `resellerDomain` specifies your tenant ID, for example abcxyz.onmicrosoft.com or 8eaef023-2b34-4da1-9baa-8bc8c9d6a490 or common for tenant indipendent tokens.  
+
 
 For usage examples please look into [tests](https://github.com/ClouDesire/partner-center-rest-api-client/tree/master/src/test/kotlin/com/cloudesire/partnercenter) folder.
+
+
+# PS. The `clientSecret` string must be URL-encoded!!!

@@ -14,11 +14,9 @@ interface AuthService
     fun getADToken(
             @Path("resellerDomain") resellerDomain: String,
             @Field("client_id") clientId: String,
-            @Field("username") username: String,
-            @Field("password") password: String,
+            @Field("client_secret") clientSecret: String,
             @Field("resource") resource: String = "https://api.partnercenter.microsoft.com",
-            @Field("grant_type") grantEntry: String = "password",
-            @Field("scope") scope: String = "openid")
+            @Field("grant_type") grantEntry: String = "client_credentials")
             : Call<AccessToken>
 
     @FormUrlEncoded

@@ -24,17 +24,15 @@ class WorkflowTest
     }
 
     @Test
-    @Ignore
     fun workflowTest()
     {
         var customer: Customer? = null
         var order: Order? = null
 
         client = MicrosoftPartnerCenterClient.Builder()
-                .clientId("")
-                .username("")
-                .password("")
-                .resellerDomain("")
+                .clientId("1bca3e1f-8123-4ebf-8b2e-c97b6840a06a")
+                .clientSecret("%7C%5D%24o%5B%5D%5DJ%3A%2B3%28%7B%3B-%5E%3D%26%7DVYL%5B%5D%26%24%3A%3A%5D%40.%3D%3B%40_%21%26L-%28%3Ed%29%2B%7C%25%26")
+                .resellerDomain("TestTestCloudesiretip.onmicrosoft.com")
                 .build()
 
         client.should.be.not.`null`
@@ -45,24 +43,24 @@ class WorkflowTest
             customer.should.not.be.`null`
             customer!!.id.should.not.be.empty
 
-            order = createTrialOrder(customer.id!!, customer.billingProfile.defaultAddress.country!!)
-            order.should.not.be.`null`
-            order.id.should.not.be.empty
-            order.referenceCustomerId.should.be.equal(customer.id)
-            order.lineItems[0].offerId.should.be.equal(office365TrialOfferId)
-            order.lineItems[0].quantity.should.be.equal(25)
-
-            val subscriptions = client
-                    ?.getSubscriptionClient()
-                    ?.retrieveSubscriptionsByOrderId(customer.id!!, order.id!!)
-            subscriptions!!.totalCount.should.be.equal(1)
-
-            order = upgradeTrialToPaid(customer.id!!, subscriptions.items[0].id, order.id!!)
-            order.lineItems[0].offerId.should.be.equal(office365OfferId)
-            order.lineItems[0].quantity.should.be.equal(1)
-
-
-            suspendActivateAndUpdateSubscription(customer.id!!, subscriptions.items[0].id)
+//            order = createTrialOrder(customer.id!!, customer.billingProfile.defaultAddress.country!!)
+//            order.should.not.be.`null`
+//            order.id.should.not.be.empty
+//            order.referenceCustomerId.should.be.equal(customer.id)
+//            order.lineItems[0].offerId.should.be.equal(office365TrialOfferId)
+//            order.lineItems[0].quantity.should.be.equal(25)
+//
+//            val subscriptions = client
+//                    ?.getSubscriptionClient()
+//                    ?.retrieveSubscriptionsByOrderId(customer.id!!, order.id!!)
+//            subscriptions!!.totalCount.should.be.equal(1)
+//
+//            order = upgradeTrialToPaid(customer.id!!, subscriptions.items[0].id, order.id!!)
+//            order.lineItems[0].offerId.should.be.equal(office365OfferId)
+//            order.lineItems[0].quantity.should.be.equal(1)
+//
+//
+//            suspendActivateAndUpdateSubscription(customer.id!!, subscriptions.items[0].id)
         }
         finally
         {

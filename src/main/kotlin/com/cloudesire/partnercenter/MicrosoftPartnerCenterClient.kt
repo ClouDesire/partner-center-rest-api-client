@@ -5,18 +5,16 @@ import com.cloudesire.partnercenter.services.*
 
 class MicrosoftPartnerCenterClient
 (
-        private val username: String,
-        private val password: String,
         private val clientId: String,
+        private val clientSecret: String,
         private val resellerDomain: String
 )
 {
     private lateinit var serviceGenerator: ServiceGenerator
 
     private constructor(builder: Builder) : this(
-            builder.username,
-            builder.password,
             builder.clientId,
+            builder.clientSecret,
             builder.resellerDomain
     )
     {
@@ -25,14 +23,12 @@ class MicrosoftPartnerCenterClient
 
     class Builder
     {
-        var username: String = ""
-        var password: String = ""
         var clientId: String = ""
+        var clientSecret: String = ""
         var resellerDomain: String = ""
 
-        fun username(username: String) = apply { this.username = username }
-        fun password(password: String) = apply { this.password = password }
         fun clientId(clientId: String) = apply { this.clientId = clientId }
+        fun clientSecret(clientSecret: String) = apply { this.clientSecret = clientSecret }
         fun resellerDomain(resellerDomain: String) = apply { this.resellerDomain = resellerDomain }
 
         fun build() = MicrosoftPartnerCenterClient(this)
@@ -40,7 +36,7 @@ class MicrosoftPartnerCenterClient
 
     fun refreshToken()
     {
-        val authToken = AuthClient(username, password, clientId, resellerDomain).getAccessToken()
+        val authToken = AuthClient(clientId, clientSecret, resellerDomain).getAccessToken()
         serviceGenerator = ServiceGenerator(authToken)
     }
 

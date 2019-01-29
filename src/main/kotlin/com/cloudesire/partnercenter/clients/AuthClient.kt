@@ -6,9 +6,8 @@ import com.cloudesire.partnercenter.services.ServiceGenerator
 
 class AuthClient
 (
-        private val username: String,
-        private val password: String,
         private val clientId: String,
+        private val clientSecret: String,
         private val resellerDomain: String
 )
 {
@@ -30,15 +29,13 @@ class AuthClient
         val adTokenCall = authService.getADToken(
                 resellerDomain,
                 clientId,
-                "$username@$resellerDomain",
-                password
+                clientSecret
         ).execute()
 
         if (adTokenCall.isSuccessful)
         {
             return adTokenCall.body()?.access_token
-        }
-        else
+        } else
         {
             throw UnauthorizedException(adTokenCall.message())
         }
@@ -57,8 +54,7 @@ class AuthClient
         if (partnerCenterTokenCall.isSuccessful)
         {
             return partnerCenterTokenCall.body()?.access_token
-        }
-        else
+        } else
         {
             throw UnauthorizedException(partnerCenterTokenCall.message())
         }
