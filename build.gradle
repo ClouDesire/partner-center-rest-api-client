@@ -19,7 +19,6 @@ group 'com.cloudesire'
 
 apply plugin: 'kotlin'
 apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.artifactory'
 
 repositories {
     mavenCentral()
@@ -66,27 +65,19 @@ publishing {
             version version
         }
     }
-}
 
-artifactory {
-    contextUrl = 'https://archiva.cloudesire.com/repository'
-    publish {
-        contextUrl = 'https://archiva.cloudesire.com/repository'
-        repository {
-            repoKey = 'snapshots'
-            username = "$System.env.ARTIFACTORY_USER"
-            password = "$System.env.ARTIFACTORY_PASS"
-        }
-        defaults {
-            publications ('mavenJava')
-            publishBuildInfo = false
-            publishArtifacts = true
-            publishPom = true
+    repositories {
+        maven {
+            url "https://archiva.cloudesire.com/repository/snapshots/"
+            credentials {
+                username = "$System.env.ARTIFACTORY_USER"
+                password = "$System.env.ARTIFACTORY_PASS"
+            }
         }
     }
 }
 
-artifactoryPublish {
+publish {
     dependsOn jar
 }
 
