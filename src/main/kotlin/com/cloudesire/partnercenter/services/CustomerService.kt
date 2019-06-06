@@ -16,6 +16,10 @@ interface CustomerService
     fun retrieveAgreements()
             : Call<Pagination<Agreement>>
 
+    @GET("v1/customers/{customerId}/agreements")
+    fun retrieveAgreementsByCustomer(@Path("customerId") customerId: String)
+            : Call<Pagination<Agreement>>
+
     @POST("v1/customers/{customerId}/agreements")
     fun acceptAgreement(@Path("customerId") customerId: String, @Body agreement: Agreement)
             : Call<Agreement>

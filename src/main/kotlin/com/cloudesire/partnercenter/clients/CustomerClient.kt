@@ -29,7 +29,7 @@ class CustomerClient
                 .execute()
 
         return createCustomerCall?.body()
-               ?: throw InvalidActionException(RetrofitUtils.extractError(createCustomerCall))
+                ?: throw InvalidActionException(RetrofitUtils.extractError(createCustomerCall))
     }
 
     @Throws(InvalidActionException::class)
@@ -37,6 +37,17 @@ class CustomerClient
     {
         val retrieveAgreementsCall = customerService
                 .retrieveAgreements()
+                .execute()
+
+        return retrieveAgreementsCall?.body()
+                ?: throw InvalidActionException(RetrofitUtils.extractError(retrieveAgreementsCall))
+    }
+
+    @Throws(InvalidActionException::class)
+    fun retrieveAgreementsByCustomer(customer: Customer): Pagination<Agreement>
+    {
+        val retrieveAgreementsCall = customerService
+                .retrieveAgreementsByCustomer(customer.id!!)
                 .execute()
 
         return retrieveAgreementsCall?.body()
@@ -68,7 +79,7 @@ class CustomerClient
                 .execute()
 
         return retrieveCustomerCall?.body()
-               ?: throw EntityNotFoundException(RetrofitUtils.extractError(retrieveCustomerCall))
+                ?: throw EntityNotFoundException(RetrofitUtils.extractError(retrieveCustomerCall))
     }
 
     @Throws(InvalidActionException::class)
