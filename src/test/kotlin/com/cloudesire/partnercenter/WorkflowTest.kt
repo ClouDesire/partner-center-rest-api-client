@@ -4,7 +4,6 @@ import com.cloudesire.partnercenter.entities.*
 import com.winterbe.expekt.should
 import mu.KLogging
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import java.util.*
 
@@ -24,17 +23,16 @@ class WorkflowTest
     }
 
     @Test
-    @Ignore
     fun workflowTest()
     {
         var customer: Customer? = null
         var order: Order? = null
 
         client = MicrosoftPartnerCenterClient.Builder()
-                .clientId("")
-                .username("")
-                .password("")
-                .resellerDomain("")
+                .clientId(getEnvironmentVariable("PARTNER_CENTER_CLIENT_ID"))
+                .username(getEnvironmentVariable("PARTNER_CENTER_USERNAME"))
+                .password(getEnvironmentVariable("PARTNER_CENTER_PASSWORD"))
+                .resellerDomain(getEnvironmentVariable("PARTNER_CENTER_DOMAIN"))
                 .build()
 
         client.should.be.not.`null`
@@ -44,6 +42,8 @@ class WorkflowTest
             customer = createCustomer()
             customer.should.not.be.`null`
             customer!!.id.should.not.be.empty
+
+            acceptAgreement(customer, retrieveMicrosoftCloudAgreementId(), "Andrea", "Dipré")
 
             order = createTrialOrder(customer.id!!, customer.billingProfile.defaultAddress.country!!)
             order.should.not.be.`null`
@@ -68,6 +68,18 @@ class WorkflowTest
         {
             cleanUp(customer, order)
         }
+    }
+
+    private fun retrieveMicrosoftCloudAgreementId(): String
+    {
+        return client!!.getCustomerClient().retrieveAgreements().items.findLast {
+            agreement -> agreement.agreementType == "MicrosoftCloudAgreement"
+        }!!.templateId
+    }
+
+    private fun acceptAgreement(customer: Customer, agreementId: String, firstName: String, lastName: String)
+    {
+        client!!.getCustomerClient().acceptAgreement(customer, agreementId, firstName, lastName)
     }
 
     private fun cleanUp(customer: Customer?, order: Order?)
@@ -124,5 +136,10 @@ class WorkflowTest
         subscription.status.should.be.equal(Subscription.SubscriptionStatus.active)
         subscription = client!!.getSubscriptionClient().updateSubscriptionQuantity(customerId = customerId, subscriptionId = subscriptionId, quantity = 2)
         subscription.quantity.should.be.equal(2)
+    }
+
+    private fun getEnvironmentVariable(envVar: String): String
+    {
+        return System.getenv(envVar)
     }
 }
