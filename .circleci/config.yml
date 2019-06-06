@@ -24,7 +24,10 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
-      - run: ./gradlew build
+      - run: ./gradlew build test
+
+      - store_test_results:
+          path: build/test-results
 
       - deploy:
           name: to the MOON
@@ -32,3 +35,21 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               ./gradlew publish
             fi
+
+
+workflows:
+  version: 2
+  nightly:
+    jobs:
+      - build
+    triggers:
+      - schedule:
+          cron: "0 3 * * *"
+          filters:
+            branches:
+              only:
+                - master
+  build-and-publish:
+    jobs:
+      - build
+
