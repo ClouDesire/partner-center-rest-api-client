@@ -1,6 +1,8 @@
 # Partner Center REST API Java8/Kotlin Client
 
-[![CircleCI](https://circleci.com/gh/ClouDesire/partner-center-rest-api-client.svg?style=svg&circle-token=a5c07114285cefe886525a9194b8e20be32d28d5)](https://circleci.com/gh/ClouDesire/partner-center-rest-api-client)  [ ![Download](https://api.bintray.com/packages/cloudesire/maven-releases/partner-center-rest-api-client/images/download.svg) ](https://bintray.com/cloudesire/maven-releases/partner-center-rest-api-client/_latestVersion) 
+# DEPRECATED please switch to the [official client](https://github.com/Microsoft/Partner-Center-Java)
+
+[![CircleCI](https://circleci.com/gh/ClouDesire/partner-center-rest-api-client.svg?style=svg&circle-token=a5c07114285cefe886525a9194b8e20be32d28d5)](https://circleci.com/gh/ClouDesire/partner-center-rest-api-client)  [ ![Download](https://api.bintray.com/packages/cloudesire/maven-releases/partner-center-rest-api-client/images/download.svg) ](https://bintray.com/cloudesire/maven-releases/partner-center-rest-api-client/_latestVersion)
 
 This is a Kotlin implementation (usable also on Java 8 projects) of the [Partner Center REST API](https://docs.microsoft.com/en-us/partner-center/develop/partner-center-rest-api-reference), based on the great [retrofit](https://github.com/square/retrofit) HTTP library.
 
