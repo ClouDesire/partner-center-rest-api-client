@@ -43,7 +43,13 @@ class WorkflowTest
             customer.should.not.be.`null`
             customer!!.id.should.not.be.empty
 
-            acceptAgreement(customer, retrieveMicrosoftCloudAgreementId(), "Andrea", "Dipré")
+            val microsoftCloudAgreement = retrieveMicrosoftCloudAgreementId()
+            acceptAgreement(customer, microsoftCloudAgreement, "Andrea", "Dipré")
+
+            val agreements = client!!.getCustomerClient().retrieveAgreementsByCustomer(customer).items
+
+            agreements.should.size(1)
+            agreements[0].templateId.should.equal(microsoftCloudAgreement)
 
             order = createTrialOrder(customer.id!!, customer.billingProfile.defaultAddress.country!!)
             order.should.not.be.`null`
